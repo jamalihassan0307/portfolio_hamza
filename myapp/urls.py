@@ -4,14 +4,10 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    # Home and search
-    path('', views.home, name='home'),
-    path('search/', views.search_users, name='search_users'),
-    
-    # User profile URLs
-    path('<str:username>/', views.user_profile, name='user_profile'),
-    path('profile/', views.profile, name='profile'),
-    path('profile/edit/', views.edit_profile, name='edit_profile'),
+    # Authentication URLs (most specific)
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+    path('register/', views.register, name='register'),
     
     # Project URLs
     path('projects/', views.projects, name='projects'),
@@ -19,10 +15,18 @@ urlpatterns = [
     path('projects/<int:project_id>/edit/', views.edit_project, name='edit_project'),
     path('projects/<int:project_id>/delete/', views.delete_project, name='delete_project'),
     
-    # Authentication URLs
-    path('login/', views.login_view, name='login'),
-    path('logout/', views.logout_view, name='logout'),
-    path('register/', views.register, name='register'),
+    # User profile URLs
+    path('profile/', views.profile, name='profile'),
+    path('profile/edit/', views.edit_profile, name='edit_profile'),
+    
+    # Search URL
+    path('search/', views.search_users, name='search_users'),
+    
+    # Home URL
+    path('', views.home, name='home'),
+    
+    # User profile URL (most generic)
+    path('<str:username>/', views.user_profile, name='user_profile'),
 ]
 
 if settings.DEBUG:
