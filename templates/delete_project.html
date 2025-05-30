@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Delete Project - Portfolio{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto">
+    <div class="bg-white rounded-lg shadow-lg p-6">
+        <h1 class="text-2xl font-bold mb-6">Delete Project</h1>
+        
+        <p class="text-gray-600 mb-6">
+            Are you sure you want to delete the project "{{ project.name }}"? This action cannot be undone.
+        </p>
+
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            <div class="flex justify-end space-x-3">
+                <a href="{% url 'projects' %}"
+                   class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                    Cancel
+                </a>
+                <button type="submit"
+                        class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
+                    Delete Project
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 
