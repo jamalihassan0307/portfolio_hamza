@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Search Results - Portfolio{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold mb-4">Search Results</h1>
+        <form action="{% url 'search_users' %}" method="get" class="flex gap-4">
+            <input type="text" 
+                   name="q" 
+                   placeholder="Search by username or title..." 
+                   class="flex-1 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                   value="{{ query }}">
+            <button type="submit" 
+                    class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                Search
+            </button>
+        </form>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for user in users %}
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div class="relative h-48">
+                    {% if user.image %}
+                        <img src="{{ user.image.url }}" 
+                             alt="{{ user.username }}" 
+                             class="w-full h-full object-cover">
+                    {% else %}
+                        <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                            <i class="fas fa-user text-4xl text-gray-400"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="p-6">
+                    <h2 class="text-xl font-bold mb-2">{{ user.username }}</h2>
+                    <p class="text-gray-600 mb-4">{{ user.title }}</p>
+                    <a href="{% url 'user_profile' user.username %}" 
+                       class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors">
+                        View Portfolio
+                    </a>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-span-full text-center text-gray-600">
+                No users found matching your search.
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 
