@@ -10,7 +10,7 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     
     # Project URLs
-    path('projects/', views.project_list, name='project_list'),
+    path('projects/', views.projects, name='projects'),
     path('projects/add/', views.add_project, name='add_project'),
     path('projects/<int:project_id>/edit/', views.edit_project, name='edit_project'),
     path('projects/<int:project_id>/delete/', views.delete_project, name='delete_project'),
@@ -20,7 +20,7 @@ urlpatterns = [
     path('profile/edit/', views.edit_profile, name='edit_profile'),
     
     # Search URL
-    path('search/', views.search, name='search'),
+    path('search/', views.search_users, name='search_users'),
     
     # Home URL
     path('', views.home, name='home'),
