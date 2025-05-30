@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React Icons CDN Alternative - Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Toast Notifications -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+</head>
+<body class="min-h-screen bg-gray-50">
+    <!-- Navbar -->
+    <nav class="flex justify-between items-center px-6 py-4 bg-gray-800 text-white">
+        <div class="text-xl font-bold">
+            <a href="index.html">Ali Hassan Portfolio</a>
+        </div>
+
+        <div class="flex items-center space-x-4">
+            <a href="index.html" class="hover:text-gray-300">Home</a>
+            <a href="projects.html" class="hover:text-gray-300">Projects</a>
+            <div id="auth-buttons">
+                <button onclick="showLoginModal()" class="bg-blue-600 px-4 py-2 rounded hover:bg-blue-700 transition-colors">
+                    Login
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div id="main-content"></div>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
+        <!-- Modal content will be injected here -->
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html> 

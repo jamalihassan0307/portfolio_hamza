@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects - Portfolio</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Toast Notifications -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+</head>
+<body class="min-h-screen bg-gray-50">
+    <!-- Navbar -->
+    <nav class="flex justify-between items-center px-6 py-4 bg-gray-800 text-white">
+        <div class="text-xl font-bold">
+            <a href="index.html">Ali Hassan Portfolio</a>
+        </div>
+
+        <div class="flex items-center space-x-4">
+            <a href="index.html" class="hover:text-gray-300">Home</a>
+            <a href="projects.html" class="hover:text-gray-300">Projects</a>
+            <div id="auth-buttons">
+                <!-- Auth buttons will be injected here -->
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold">Featured Projects</h1>
+            <div id="add-project-button" class="hidden">
+                <button onclick="showProjectForm()"
+                        class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 flex items-center gap-2">
+                    <i class="fas fa-plus"></i>
+                    <span>Add Project</span>
+                </button>
+            </div>
+        </div>
+        
+        <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Projects will be injected here -->
+        </div>
+    </div>
+
+    <!-- Project Form Modal -->
+    <div id="project-form-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold" id="modal-title">Add New Project</h2>
+                    <button onclick="closeProjectForm()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <form id="project-form" class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Project Name</label>
+                        <input type="text" 
+                               id="project-name" 
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" 
+                               required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Image URL</label>
+                        <input type="url" 
+                               id="project-image" 
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" 
+                               required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Description</label>
+                        <textarea id="project-description" 
+                                  rows="4" 
+                                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" 
+                                  required></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Technologies (comma-separated)</label>
+                        <input type="text" 
+                               id="project-technologies" 
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" 
+                               placeholder="React, Node.js, MongoDB" 
+                               required>
+                    </div>
+                    <div class="flex justify-end space-x-3 pt-4 border-t">
+                        <button type="button" 
+                                onclick="closeProjectForm()" 
+                                class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                            Cancel
+                        </button>
+                        <button type="submit" 
+                                class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                            Save Project
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project Details Modal -->
+    <div id="project-details-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-lg shadow-xl max-w-3xl w-full mx-4">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold">Project Details</h2>
+                    <button onclick="closeProjectDetails()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div id="project-details-content">
+                    <!-- Project details will be injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/projects.js"></script>
+</body>
+</html> 
