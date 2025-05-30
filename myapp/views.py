@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.db.models import Q
 from django.http import JsonResponse
 from .models import User, Project, Technology, Language
-from .forms import UserRegistrationForm, ProjectForm, ProfileForm, UserForm
+from .forms import UserRegistrationForm, ProjectForm, ProfileForm
 
 def home(request):
     users = User.objects.filter(role='portfolio_user')
