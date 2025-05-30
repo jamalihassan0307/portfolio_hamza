@@ -19,6 +19,11 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('profile/edit/', views.edit_profile, name='edit_profile'),
     
+    # Skill management URLs
+    path('add-skill/', views.add_skill, name='add_skill'),
+    path('edit-skill/<int:skill_id>/', views.add_skill, name='edit_skill'),
+    path('delete-skill/<int:skill_id>/', views.delete_skill, name='delete_skill'),
+    
     # Search URL
     path('search/', views.search_users, name='search_users'),
     
@@ -27,10 +32,6 @@ urlpatterns = [
     
     # User profile URL (most generic)
     path('<str:username>/', views.user_profile, name='user_profile'),
-    
-    # Skill management URLs
-    path('add-skill/', views.add_skill, name='add_skill'),
-    path('delete-skill/<int:skill_id>/', views.delete_skill, name='delete_skill'),
 ]
 
 if settings.DEBUG:

@@ -122,30 +122,39 @@ def register(request):
 @login_required
 def add_skill(request):
     if request.method == 'POST':
+        name = request.POST.get('name')
+        level = request.POST.get('level')
         skill_id = request.POST.get('skill_id')
-        if skill_id:  # Edit existing skill
-            skill = get_object_or_404(Language, id=skill_id, user=request.user)
-            form = SkillForm(request.POST, instance=skill)
-        else:  # Add new skill
-            form = SkillForm(request.POST)
         
-        if form.is_valid():
-            skill = form.save(commit=False)
-            skill.user = request.user
-            skill.save()
-            messages.success(request, 'Skill saved successfully!')
-            return redirect('profile')
+        if skill_id:
+            # Edit existing skill
+            try:
+                skill = Language.objects.get(id=skill_id, user=request.user)
+                skill.name = name
+                skill.level = level
+                skill.save()
+                messages.success(request, 'Skill updated successfully!')
+            except Language.DoesNotExist:
+                messages.error(request, 'Skill not found.')
         else:
-            messages.error(request, 'Please correct the errors below.')
-    else:
-        form = SkillForm()
+            # Add new skill
+            Language.objects.create(
+                user=request.user,
+                name=name,
+                level=level
+            )
+            messages.success(request, 'Skill added successfully!')
+        
+        return JsonResponse({'status': 'success'})
     
-    return render(request, 'skill_form.html', {'form': form})
+    return JsonResponse({'status': 'error'}, status=400)
 
 @login_required
 def delete_skill(request, skill_id):
-    if request.method == 'POST':
-        skill = get_object_or_404(Language, id=skill_id, user=request.user)
+    try:
+        skill = Language.objects.get(id=skill_id, user=request.user)
         skill.delete()
+        messages.success(request, 'Skill deleted successfully!')
         return JsonResponse({'status': 'success'})
-    return JsonResponse({'status': 'error'}, status=400)
+    except Language.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Skill not found.'}, status=404)
