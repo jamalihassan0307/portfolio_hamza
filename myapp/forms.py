@@ -42,4 +42,4 @@ class ProjectForm(forms.ModelForm):
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4}),
             'technologies': forms.CheckboxSelectMultiple(),
-        } 
+        }
