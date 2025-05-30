@@ -10,7 +10,7 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     
     # Project URLs
-    path('projects/', views.projects, name='projects'),
+    path('projects/', views.project_list, name='project_list'),
     path('projects/add/', views.add_project, name='add_project'),
     path('projects/<int:project_id>/edit/', views.edit_project, name='edit_project'),
     path('projects/<int:project_id>/delete/', views.delete_project, name='delete_project'),
@@ -20,13 +20,17 @@ urlpatterns = [
     path('profile/edit/', views.edit_profile, name='edit_profile'),
     
     # Search URL
-    path('search/', views.search_users, name='search_users'),
+    path('search/', views.search, name='search'),
     
     # Home URL
     path('', views.home, name='home'),
     
     # User profile URL (most generic)
     path('<str:username>/', views.user_profile, name='user_profile'),
+    
+    # Skill management URLs
+    path('add-skill/', views.add_skill, name='add_skill'),
+    path('delete-skill/<int:skill_id>/', views.delete_skill, name='delete_skill'),
 ]
 
 if settings.DEBUG:

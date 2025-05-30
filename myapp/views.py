@@ -3,8 +3,9 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q
+from django.http import JsonResponse
 from .models import User, Project, Technology, Language
-from .forms import UserRegistrationForm, ProjectForm, ProfileForm
+from .forms import UserRegistrationForm, ProjectForm, ProfileForm, UserForm
 
 def home(request):
     users = User.objects.filter(role='portfolio_user')
@@ -117,3 +118,35 @@ def register(request):
     else:
         form = UserRegistrationForm()
     return render(request, 'register.html', {'form': form})
+
+@login_required
+def add_skill(request):
+    if request.method == 'POST':
+        skill_id = request.POST.get('skill_id')
+        name = request.POST.get('name')
+        level = request.POST.get('level')
+        
+        if skill_id:  # Edit existing skill
+            skill = get_object_or_404(Language, id=skill_id, user=request.user)
+            skill.name = name
+            skill.level = level
+            skill.save()
+            messages.success(request, 'Skill updated successfully!')
+        else:  # Add new skill
+            Language.objects.create(
+                user=request.user,
+                name=name,
+                level=level
+            )
+            messages.success(request, 'Skill added successfully!')
+        
+        return redirect('profile')
+    return redirect('profile')
+
+@login_required
+def delete_skill(request, skill_id):
+    if request.method == 'POST':
+        skill = get_object_or_404(Language, id=skill_id, user=request.user)
+        skill.delete()
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error'}, status=400)

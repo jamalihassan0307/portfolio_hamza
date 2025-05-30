@@ -8,10 +8,18 @@
     <!-- Profile Header -->
     <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
         <div class="relative h-48 bg-gradient-to-r from-blue-600 to-purple-600">
-            <a href="{% url 'edit_profile' %}" 
-               class="absolute top-4 right-4 bg-white p-2 rounded-full shadow-lg hover:bg-gray-100">
-                <i class="fas fa-edit text-blue-600 text-xl"></i>
-            </a>
+            <div class="absolute top-4 right-4 flex space-x-2">
+                <a href="{% url 'edit_profile' %}" 
+                   class="bg-white p-2 rounded-full shadow-lg hover:bg-gray-100 transition-colors"
+                   title="Edit Profile">
+                    <i class="fas fa-edit text-blue-600 text-xl"></i>
+                </a>
+                <a href="{% url 'add_project' %}" 
+                   class="bg-white p-2 rounded-full shadow-lg hover:bg-gray-100 transition-colors"
+                   title="Add Project">
+                    <i class="fas fa-plus text-green-600 text-xl"></i>
+                </a>
+            </div>
         </div>
 
         <div class="relative px-6 py-10">
@@ -36,16 +44,16 @@
 
                 <div class="mt-6 flex justify-center space-x-6">
                     {% if user.email %}
-                        <div class="flex items-center text-gray-600">
+                        <a href="mailto:{{ user.email }}" class="flex items-center text-gray-600 hover:text-blue-600 transition-colors">
                             <i class="fas fa-envelope mr-2"></i>
                             {{ user.email }}
-                        </div>
+                        </a>
                     {% endif %}
                     {% if user.phone %}
-                        <div class="flex items-center text-gray-600">
+                        <a href="tel:{{ user.phone }}" class="flex items-center text-gray-600 hover:text-blue-600 transition-colors">
                             <i class="fas fa-phone mr-2"></i>
                             {{ user.phone }}
-                        </div>
+                        </a>
                     {% endif %}
                 </div>
             </div>
@@ -53,33 +61,52 @@
     </div>
 
     <!-- Skills Section -->
-    {% if user.languages.exists %}
-        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
-            <h3 class="text-xl font-semibold mb-4">Technical Skills</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {% for language in user.languages.all %}
-                    <div class="bg-gray-50 p-4 rounded-lg">
-                        <div class="flex justify-between mb-2">
-                            <span class="font-medium">{{ language.name }}</span>
-                            <span class="text-blue-600">{{ language.level }}%</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="bg-blue-600 h-2 rounded-full" 
-                                 style="width: {{ language.level }}%"></div>
+    <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-xl font-semibold">Technical Skills</h3>
+            <button onclick="showAddSkillModal()" 
+                    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center">
+                <i class="fas fa-plus mr-2"></i>Add Skill
+            </button>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {% for language in user.languages.all %}
+                <div class="bg-gray-50 p-4 rounded-lg hover:shadow-md transition-shadow">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-lg">{{ language.name }}</span>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-blue-600 font-semibold">{{ language.level }}%</span>
+                            <button onclick="editSkill({{ language.id }}, '{{ language.name }}', {{ language.level }})"
+                                    class="text-gray-500 hover:text-blue-600 transition-colors">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteSkill({{ language.id }})"
+                                    class="text-gray-500 hover:text-red-600 transition-colors">
+                                <i class="fas fa-trash"></i>
+                            </button>
                         </div>
                     </div>
-                {% endfor %}
-            </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ language.level }}%"></div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-span-full text-center py-8">
+                    <i class="fas fa-code text-4xl text-gray-400 mb-4"></i>
+                    <p class="text-gray-600">No skills added yet. Add your first skill to showcase your expertise!</p>
+                </div>
+            {% endfor %}
         </div>
-    {% endif %}
+    </div>
 
     <!-- Projects Section -->
     <div class="bg-white rounded-lg shadow-lg p-6">
         <div class="flex justify-between items-center mb-6">
             <h3 class="text-xl font-semibold">My Projects</h3>
             <a href="{% url 'add_project' %}" 
-               class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                Add Project
+               class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center">
+                <i class="fas fa-plus mr-2"></i>Add Project
             </a>
         </div>
 
@@ -120,14 +147,102 @@
                     </div>
                 </div>
             {% empty %}
-                <div class="col-span-full text-center text-gray-600">
-                    You haven't added any projects yet.
-                    <a href="{% url 'add_project' %}" class="text-blue-600 hover:text-blue-700 ml-2">
-                        Add your first project
-                    </a>
+                <div class="col-span-full text-center py-8">
+                    <i class="fas fa-project-diagram text-4xl text-gray-400 mb-4"></i>
+                    <p class="text-gray-600">No projects added yet. Start showcasing your work!</p>
                 </div>
             {% endfor %}
         </div>
     </div>
 </div>
+
+<!-- Add/Edit Skill Modal -->
+<div id="skillModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+    <div class="bg-white rounded-lg p-6 w-full max-w-md">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-semibold" id="modalTitle">Add Skill</h3>
+            <button onclick="hideSkillModal()" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <form id="skillForm" method="post" action="{% url 'add_skill' %}">
+            {% csrf_token %}
+            <input type="hidden" name="skill_id" id="skillId">
+            <div class="space-y-4">
+                <div>
+                    <label for="skillName" class="block text-sm font-medium text-gray-700">Skill Name</label>
+                    <input type="text" id="skillName" name="name" required
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label for="skillLevel" class="block text-sm font-medium text-gray-700">Skill Level (%)</label>
+                    <input type="range" id="skillLevel" name="level" min="0" max="100" value="50"
+                           class="mt-1 block w-full"
+                           oninput="updateLevelValue(this.value)">
+                    <div class="flex justify-between text-sm text-gray-600">
+                        <span>0%</span>
+                        <span id="levelValue">50%</span>
+                        <span>100%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end space-x-3">
+                <button type="button" onclick="hideSkillModal()"
+                        class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                    Cancel
+                </button>
+                <button type="submit"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                    Save Skill
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function showAddSkillModal() {
+    document.getElementById('modalTitle').textContent = 'Add Skill';
+    document.getElementById('skillForm').reset();
+    document.getElementById('skillId').value = '';
+    document.getElementById('skillModal').classList.remove('hidden');
+    document.getElementById('skillModal').classList.add('flex');
+}
+
+function hideSkillModal() {
+    document.getElementById('skillModal').classList.add('hidden');
+    document.getElementById('skillModal').classList.remove('flex');
+}
+
+function editSkill(id, name, level) {
+    document.getElementById('modalTitle').textContent = 'Edit Skill';
+    document.getElementById('skillId').value = id;
+    document.getElementById('skillName').value = name;
+    document.getElementById('skillLevel').value = level;
+    updateLevelValue(level);
+    document.getElementById('skillModal').classList.remove('hidden');
+    document.getElementById('skillModal').classList.add('flex');
+}
+
+function updateLevelValue(value) {
+    document.getElementById('levelValue').textContent = value + '%';
+}
+
+function deleteSkill(id) {
+    if (confirm('Are you sure you want to delete this skill?')) {
+        fetch(`/delete-skill/${id}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            },
+        }).then(response => {
+            if (response.ok) {
+                window.location.reload();
+            }
+        });
+    }
+}
+</script>
 {% endblock %} 
