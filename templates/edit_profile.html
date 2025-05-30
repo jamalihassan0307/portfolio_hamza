@@ -4,120 +4,142 @@
 {% block title %}Edit Profile - Portfolio{% endblock %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto">
-    <div class="bg-white rounded-lg shadow-lg p-6">
-        <div class="flex items-center justify-between mb-6">
-            <h1 class="text-2xl font-bold">Edit Profile</h1>
-            <a href="{% url 'profile' %}" class="text-gray-600 hover:text-gray-800">
-                <i class="fas fa-times"></i>
-            </a>
-        </div>
+<div class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-3xl mx-auto">
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div class="px-6 py-8">
+                <h2 class="text-3xl font-bold text-gray-900 mb-8">Edit Profile</h2>
+                
+                <form method="post" enctype="multipart/form-data" class="space-y-8">
+                    {% csrf_token %}
+                    
+                    <!-- Profile Image -->
+                    <div class="flex items-center space-x-6">
+                        <div class="shrink-0">
+                            {% if user.image %}
+                                <img class="h-24 w-24 object-cover rounded-full" src="{{ user.image.url }}" alt="{{ user.username }}">
+                            {% else %}
+                                <div class="h-24 w-24 rounded-full bg-gray-200 flex items-center justify-center">
+                                    <i class="fas fa-user text-4xl text-gray-400"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Profile Image</label>
+                            <div class="mt-1 flex items-center">
+                                <input type="file" name="image" accept="image/*" 
+                                       class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                            </div>
+                        </div>
+                    </div>
 
-        <form method="post" enctype="multipart/form-data" class="space-y-6">
-            {% csrf_token %}
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {% for field in form %}
+                    <!-- Basic Information -->
+                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                        <div>
+                            <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700">Title</label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                                <p class="mt-2 text-sm text-red-600">{{ form.title.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <label for="{{ form.phone.id_for_label }}" class="block text-sm font-medium text-gray-700">Phone</label>
+                            {{ form.phone }}
+                            {% if form.phone.errors %}
+                                <p class="mt-2 text-sm text-red-600">{{ form.phone.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
                     <div>
-                        <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700">
-                            {{ field.label }}
-                        </label>
-                        {{ field.errors }}
-                        {{ field }}
-                        {% if field.help_text %}
-                            <p class="mt-1 text-sm text-gray-500">{{ field.help_text }}</p>
+                        <label for="{{ form.qualifications.id_for_label }}" class="block text-sm font-medium text-gray-700">Qualifications</label>
+                        {{ form.qualifications }}
+                        {% if form.qualifications.errors %}
+                            <p class="mt-2 text-sm text-red-600">{{ form.qualifications.errors.0 }}</p>
                         {% endif %}
                     </div>
-                {% endfor %}
-            </div>
 
-            <!-- Skills Section -->
-            <div class="space-y-4">
-                <div class="flex justify-between items-center">
-                    <h3 class="text-lg font-medium text-gray-900">Technical Skills</h3>
-                    <button type="button" 
-                            onclick="addSkill()"
-                            class="px-3 py-1 bg-blue-100 text-blue-600 rounded-md hover:bg-blue-200">
-                        Add Skill
-                    </button>
-                </div>
-                
-                <div id="skills-container" class="space-y-4">
-                    {{ language_formset.management_form }}
-                    {% for form in language_formset %}
-                        <div class="flex items-center gap-4">
-                            <div class="flex-1">
-                                {{ form.name }}
-                            </div>
-                            <div class="flex-1">
-                                {{ form.level }}
-                            </div>
-                            <button type="button"
-                                    onclick="removeSkill(this)"
-                                    class="p-2 text-red-600 hover:text-red-800">
-                                <i class="fas fa-times"></i>
-                            </button>
+                    <div>
+                        <label for="{{ form.bio.id_for_label }}" class="block text-sm font-medium text-gray-700">Bio</label>
+                        {{ form.bio }}
+                        {% if form.bio.errors %}
+                            <p class="mt-2 text-sm text-red-600">{{ form.bio.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Technical Skills Section -->
+                    <div class="border-t border-gray-200 pt-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-medium text-gray-900">Technical Skills</h3>
+                            <a href="{% url 'add_skill' %}" 
+                               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                <i class="fas fa-plus mr-2"></i>
+                                Add Skill
+                            </a>
                         </div>
-                    {% endfor %}
-                </div>
-            </div>
 
-            <div class="flex justify-end space-x-3 pt-4 border-t">
-                <a href="{% url 'profile' %}"
-                   class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
-                    Cancel
-                </a>
-                <button type="submit"
-                        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                    Save Changes
-                </button>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {% for language in user.languages.all %}
+                                <div class="bg-gray-50 p-4 rounded-lg hover:shadow-md transition-shadow">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="font-medium text-lg">{{ language.name }}</span>
+                                        <div class="flex items-center space-x-2">
+                                            <span class="text-blue-600 font-semibold">{{ language.level }}%</span>
+                                            <a href="{% url 'add_skill' %}?skill_id={{ language.id }}" 
+                                               class="text-gray-500 hover:text-blue-600 transition-colors">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <button onclick="deleteSkill({{ language.id }})"
+                                                    class="text-gray-500 hover:text-red-600 transition-colors">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                        <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ language.level }}%"></div>
+                                    </div>
+                                </div>
+                            {% empty %}
+                                <div class="col-span-full text-center py-8">
+                                    <i class="fas fa-code text-4xl text-gray-400 mb-4"></i>
+                                    <p class="text-gray-600">No skills added yet. Add your first skill to showcase your expertise!</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+                        <a href="{% url 'profile' %}" 
+                           class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Cancel
+                        </a>
+                        <button type="submit" 
+                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-function addSkill() {
-    const container = document.getElementById('skills-container');
-    const totalForms = document.getElementById('id_languages-TOTAL_FORMS');
-    const formNum = parseInt(totalForms.value);
-    
-    const newForm = document.createElement('div');
-    newForm.className = 'flex items-center gap-4';
-    newForm.innerHTML = `
-        <div class="flex-1">
-            <input type="text" 
-                   name="languages-${formNum}-name" 
-                   class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                   placeholder="Skill name"
-                   required>
-        </div>
-        <div class="flex-1">
-            <input type="number"
-                   name="languages-${formNum}-level"
-                   min="0"
-                   max="100"
-                   class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                   placeholder="Level (0-100)"
-                   required>
-        </div>
-        <button type="button"
-                onclick="removeSkill(this)"
-                class="p-2 text-red-600 hover:text-red-800">
-            <i class="fas fa-times"></i>
-        </button>
-    `;
-    
-    container.appendChild(newForm);
-    totalForms.value = formNum + 1;
-}
-
-function removeSkill(button) {
-    const container = document.getElementById('skills-container');
-    const form = button.closest('div');
-    container.removeChild(form);
+function deleteSkill(skillId) {
+    if (confirm('Are you sure you want to delete this skill?')) {
+        fetch(`/delete-skill/${skillId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            },
+        }).then(response => {
+            if (response.ok) {
+                window.location.reload();
+            }
+        });
+    }
 }
 </script>
 {% endblock %} 
