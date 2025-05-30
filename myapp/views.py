@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.db.models import Q
 from django.http import JsonResponse
 from .models import User, Project, Technology, Language
-from .forms import UserRegistrationForm, ProjectForm, ProfileForm
+from .forms import UserRegistrationForm, ProjectForm, ProfileForm, SkillForm
 
 def home(request):
     users = User.objects.filter(role='portfolio_user')
@@ -123,25 +123,24 @@ def register(request):
 def add_skill(request):
     if request.method == 'POST':
         skill_id = request.POST.get('skill_id')
-        name = request.POST.get('name')
-        level = request.POST.get('level')
-        
         if skill_id:  # Edit existing skill
             skill = get_object_or_404(Language, id=skill_id, user=request.user)
-            skill.name = name
-            skill.level = level
-            skill.save()
-            messages.success(request, 'Skill updated successfully!')
+            form = SkillForm(request.POST, instance=skill)
         else:  # Add new skill
-            Language.objects.create(
-                user=request.user,
-                name=name,
-                level=level
-            )
-            messages.success(request, 'Skill added successfully!')
+            form = SkillForm(request.POST)
         
-        return redirect('profile')
-    return redirect('profile')
+        if form.is_valid():
+            skill = form.save(commit=False)
+            skill.user = request.user
+            skill.save()
+            messages.success(request, 'Skill saved successfully!')
+            return redirect('profile')
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = SkillForm()
+    
+    return render(request, 'skill_form.html', {'form': form})
 
 @login_required
 def delete_skill(request, skill_id):

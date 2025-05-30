@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Add Skill - Portfolio{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+        <div>
+            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                Add New Skill
+            </h2>
+            <p class="mt-2 text-center text-sm text-gray-600">
+                Showcase your expertise
+            </p>
+        </div>
+        <form class="mt-8 space-y-6" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="skill_id" value="{{ form.instance.id|default:'' }}">
+            
+            <div class="rounded-md shadow-sm -space-y-px">
+                <div>
+                    <label for="{{ form.name.id_for_label }}" class="sr-only">Skill Name</label>
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                        <p class="mt-2 text-sm text-red-600">{{ form.name.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                <div>
+                    <label for="{{ form.level.id_for_label }}" class="sr-only">Skill Level</label>
+                    {{ form.level }}
+                    {% if form.level.errors %}
+                        <p class="mt-2 text-sm text-red-600">{{ form.level.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if form.non_field_errors %}
+                <div class="rounded-md bg-red-50 p-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-exclamation-circle text-red-400"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-red-800">
+                                There were errors with your submission
+                            </h3>
+                            <div class="mt-2 text-sm text-red-700">
+                                <ul class="list-disc pl-5 space-y-1">
+                                    {% for error in form.non_field_errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="flex items-center justify-between">
+                <a href="{% url 'profile' %}" 
+                   class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                    Back to Profile
+                </a>
+                <button type="submit" 
+                        class="group relative flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                        <i class="fas fa-save text-blue-500 group-hover:text-blue-400"></i>
+                    </span>
+                    Save Skill
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 
